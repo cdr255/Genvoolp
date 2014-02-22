@@ -22,8 +22,8 @@ function love.load()
    ball_yvel = 0
    ball_width = 40
    ball_height = ball_width
-   ball_difficulty = 0.5
-   ball_max = 2
+   ball_difficulty = 0.25
+   ball_max = 6
 
    -- Sound
    beep_length = 0.125
@@ -137,7 +137,7 @@ function ball_move(dt)
    end
    -- Player 1
    if (ball_y + 40) >= p1_y and ball_y <= (p1_y + 200) then
-      if ball_x <= 40 and ball_x >= 38 then
+      if ball_x <= 41 and ball_x >= 35 then
 	 ball_xvel = (ball_xvel - ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
@@ -145,7 +145,7 @@ function ball_move(dt)
    
    -- Player 2
    if (ball_y + 40) >= p2_y and ball_y <= (p2_y +200) then
-      if ball_x >= 720 and ball_x <= 722 then
+      if ball_x >= 719 and ball_x <= 725 then
 	 ball_xvel = (ball_xvel + ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
