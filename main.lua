@@ -24,6 +24,7 @@ function love.load()
    ball_height = ball_width
    ball_difficulty = 0.25
    ball_max = 6
+   ball_random = 1
 
    -- Sound
    beep_length = 0.125
@@ -47,6 +48,10 @@ function love.load()
 
    wall_beep = love.audio.newSource(wall_sound)
    paddle_beep = love.audio.newSource(paddle_sound)
+
+   -- Randomness
+   random_seed = math.randomseed( os.time())
+
 end
 
 function love.draw()
@@ -93,8 +98,7 @@ end
 function love.keypressed(key)
    if ball_xvel == 0 and ball_yvel == 0 then
       if key == "c" then
-	 ball_xvel = 1
-	 ball_yvel = 1
+	 ball_serve()
       end
    end
       
@@ -103,6 +107,34 @@ function love.keypressed(key)
    end
 end
 
+function ball_serve()
+   	 ball_random = math.random( 0, 7 )
+	 if ball_random == 0 then
+	    ball_xvel = 1
+	    ball_yvel = 1
+	 elseif ball_random == 1 then
+	    ball_xvel = 1
+	    ball_yvel = 0.5
+	 elseif ball_random == 2 then
+	    ball_xvel = 1
+	    ball_yvel = -0.5
+	 elseif ball_random == 3 then
+	    ball_xvel = 1
+	    ball_yvel = -1
+	 elseif ball_random == 4 then
+	    ball_xvel = -1
+	    ball_yvel = 1
+	 elseif ball_random == 5 then
+	    ball_xvel = -1
+	    ball_yvel = 0.5
+	 elseif ball_random == 6 then
+	    ball_xvel = -1
+	    ball_yvel = -0.5
+	 elseif ball_random == 7 then
+	    ball_xvel = -1
+	    ball_yvel = -1
+	 end
+end
 
 function ball_move(dt)
    -- Wall Collisions
