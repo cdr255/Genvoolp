@@ -20,7 +20,29 @@ function love.load()
    ball_yvel = 0
    ball_width = 40
    ball_height = ball_width
+   
+   -- Sound
+   beep_length = 0.5
+   beep_rate = 44100
+   beep_bits = 16
+   beep_channel = 1
+   beep_amplitude = 0.2
 
+   wall_sound = love.sound.newSoundData(beep_length * beep_rate, beep_rate, beep_bits, beep_channel)
+   paddle_sound = love.sound.newSoundData(beep_length * beep_rate, beep_rate, beep_bits, beep_channel)
+
+   pitch_a = Oscillator(440)
+   pitch_c = Oscillator(261)
+   
+   for i=1,beep_length*beep_rate do
+      wall_sample = pitch_a() * beep_amplitude
+      wall_sound:setSample(i, wall_sample)
+      paddle_sample = pitch_c() * beep_amplitude
+      paddle_sound:setSample(i, paddle_sample)
+   end
+
+   wall_beep = love.audio.newSource(wall_sound)
+   paddle_beep = love.audio.newSource(paddle_sound)
 end
 
 function love.draw()
@@ -61,6 +83,21 @@ function love.update(dt)
    ball_move(dt)
 
 end
+
+
+function love.keypressed(key)
+   if ball_xvel == 0 and ball_yvel == 0 then
+      if key == "c" then
+	 ball_xvel = 1
+	 ball_yvel = 1
+      end
+   end
+      
+   if key == "escape" then
+      love.event.quit()
+   end
+end
+
 
 function ball_move(dt)
       -- Wall Collisions
@@ -105,15 +142,13 @@ function ball_move(dt)
    ball_y = ball_y + (ball_yvel * 200 * dt)
 end
 
-function love.keypressed(key)
-   if ball_xvel == 0 and ball_yvel == 0 then
-      if key == "c" then
-	 ball_xvel = 1
-	 ball_yvel = 1
-      end
-   end
-      
-   if key == "escape" then
-      love.event.quit()
-   end
+function Oscillator(freq)
+    local phase = 0
+    return function()
+        phase = phase + 2*math.pi/rate            
+        if phase &gt;= 2*math.pi then
+            phase = phase - 2*math.pi
+        end 
+        return math.sin(freq*phase)
+    end
 end
