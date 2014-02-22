@@ -145,7 +145,7 @@ function ball_move(dt)
       ball_yvel = 0
       ball_x = 380
       ball_y = 280
-      ball_difficulty = 0.5
+      ball_difficulty = 0.25
    end
    
    if ball_x > 760 then
@@ -154,7 +154,7 @@ function ball_move(dt)
       ball_yvel = 0
       ball_x = 380
       ball_y = 280
-      ball_difficulty = 0.5
+      ball_difficulty = 0.25
    end
    -- Bouncing
    if ball_y < 0 or ball_y > 560 then
