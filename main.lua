@@ -58,6 +58,7 @@ function love.draw()
    love.graphics.print( p1_score, 150, 0 )
    love.graphics.print( p2_score, 650, 0 )
    love.graphics.print( ball_xvel, 300, 0 )
+   love.graphics.print( ball_yvel, 500, 0 )
    love.graphics.rectangle("line", p1_x, p1_y, p1_width, p1_height)
    love.graphics.rectangle("line", p2_x, p2_y, p2_width, p2_height)
    love.graphics.rectangle("fill", ball_x, ball_y, ball_width, ball_height)
@@ -164,14 +165,21 @@ function ball_move(dt)
    
    -- Player Collisions
    -- Difficulty Check
-   if math.abs(ball_xvel) >= ball_max then
-      ball_difficulty = 0
-   end
    -- Player 1
    if (ball_y + 40) >= p1_y and ball_y <= (p1_y + 200) then
       if ball_x <= 40 then
+	 if ball_y <= (p1_y + 67) then
+	    ball_yvel = (ball_yvel - ball_difficulty)
+	 end
+	 if (ball_y + 40) >= (p1_y + 133) then
+	    ball_yvel = (ball_yvel + ball_difficulty)
+	 end
 	 ball_x = 41
-	 ball_xvel = (ball_xvel - ball_difficulty) * -1
+	 if math.abs(ball_xvel) <= (ball_max - ball_difficulty) then
+	    ball_xvel = (ball_xvel - ball_difficulty) * -1
+	 else 
+	    ball_xvel = ball_xvel * -1
+	 end
 	 love.audio.play(paddle_beep)
       end
    end
@@ -179,12 +187,22 @@ function ball_move(dt)
    -- Player 2
    if (ball_y + 40) >= p2_y and ball_y <= (p2_y +200) then
       if ball_x >= 720 then
+	 if ball_y <= (p2_y + 67) then
+	    ball_yvel = (ball_yvel - ball_difficulty)
+	 end
+	 if (ball_y + 40) >= (p2_y + 133) then
+	    ball_yvel = (ball_yvel + ball_difficulty)
+	 end
 	 ball_x = 719
-	 ball_xvel = (ball_xvel + ball_difficulty) * -1
+	 if math.abs(ball_xvel) <= (ball_max - ball_difficulty) then
+	    ball_xvel = (ball_xvel + ball_difficulty) * -1
+	 else 
+	    ball_xvel = ball_xvel * -1
+	 end
 	 love.audio.play(paddle_beep)
       end
    end
-
+   
    -- Chug Chug
    ball_x = ball_x + (ball_xvel * 200 * dt)
    ball_y = ball_y + (ball_yvel * 200 * dt)
