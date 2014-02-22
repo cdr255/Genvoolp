@@ -1,16 +1,16 @@
 function love.load()
    -- Player 1
-   p1_x = 0
+   p1_x = 20
    p1_y = 100
    p1_score = 0
-   p1_width = 40
+   p1_width = 20
    p1_height = 200
 
    -- Player 2
    p2_x = 760
    p2_y = 100
    p2_score = 0
-   p2_width = 40
+   p2_width = 20
    p2_height = 200
 
    -- Ball
@@ -20,9 +20,10 @@ function love.load()
    ball_yvel = 0
    ball_width = 40
    ball_height = ball_width
+   ball_difficulty = 1
    
    -- Sound
-   beep_length = 0.5
+   beep_length = 0.125
    beep_rate = 44100
    beep_bits = 16
    beep_channel = 1
@@ -32,7 +33,7 @@ function love.load()
    paddle_sound = love.sound.newSoundData(beep_length * beep_rate, beep_rate, beep_bits, beep_channel)
 
    pitch_a = Oscillator(440)
-   pitch_c = Oscillator(261)
+   pitch_c = Oscillator(522)
    
    for i=1,beep_length*beep_rate do
       wall_sample = pitch_a() * beep_amplitude
@@ -120,20 +121,23 @@ function ball_move(dt)
    -- Bouncing
    if ball_y < 0 or ball_y > 560 then
       ball_yvel = ball_yvel * -1
+      love.audio.play(wall_beep)
    end
 
    -- Player Collisions
    -- Player 1
    if ball_y >= p1_y and ball_y <= (p1_y +200) then
       if ball_x <= 40 then
-	 ball_xvel = ball_xvel * -1
+	 ball_xvel = (ball_xvel + ball_difficulty) * -1
+	 love.audio.play(paddle_beep)
       end
    end
 
    -- Player 2
    if ball_y >= p2_y and ball_y <= (p2_y +200) then
       if ball_x >= 720 then
-	 ball_xvel = ball_xvel * -1
+	 ball_xvel = (ball_xvel + ball_difficulty) * -1
+	 love.audio.play(paddle_beep)
       end
    end
 
@@ -145,8 +149,8 @@ end
 function Oscillator(freq)
     local phase = 0
     return function()
-        phase = phase + 2*math.pi/rate            
-        if phase &gt;= 2*math.pi then
+        phase = phase + 2*math.pi/beep_rate            
+        if phase >= 2*math.pi then
             phase = phase - 2*math.pi
         end 
         return math.sin(freq*phase)
