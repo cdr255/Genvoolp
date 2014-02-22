@@ -5,6 +5,7 @@ function love.load()
    p1_score = 0
    p1_width = 20
    p1_height = 200
+   p1_speed = 400
 
    -- Player 2
    p2_x = 760
@@ -12,6 +13,7 @@ function love.load()
    p2_score = 0
    p2_width = 20
    p2_height = 200
+   p2_speed = 400
 
    -- Ball
    ball_x = 380
@@ -20,8 +22,9 @@ function love.load()
    ball_yvel = 0
    ball_width = 40
    ball_height = ball_width
-   ball_difficulty = 1
-   
+   ball_difficulty = 0.5
+   ball_max = 2
+
    -- Sound
    beep_length = 0.125
    beep_rate = 44100
@@ -49,6 +52,7 @@ end
 function love.draw()
    love.graphics.print( p1_score, 150, 0 )
    love.graphics.print( p2_score, 650, 0 )
+   love.graphics.print( ball_xvel, 300, 0 )
    love.graphics.rectangle("line", p1_x, p1_y, p1_width, p1_height)
    love.graphics.rectangle("line", p2_x, p2_y, p2_width, p2_height)
    love.graphics.rectangle("fill", ball_x, ball_y, ball_width, ball_height)
@@ -59,25 +63,25 @@ function love.update(dt)
    -- Player Movement
    if love.keyboard.isDown("w") then
       if p1_y > -10 then
-	 p1_y = p1_y - (200 * dt) 
+	 p1_y = p1_y - (p1_speed * dt) 
       end
    end 
 
    if love.keyboard.isDown("s") then
       if p1_y < 410 then
-	 p1_y = p1_y + (200 * dt) 
+	 p1_y = p1_y + (p1_speed * dt) 
       end
    end 
 
    if love.keyboard.isDown("up") then
       if p2_y > -10 then
-	 p2_y = p2_y - (200 * dt) 
+	 p2_y = p2_y - (p2_speed * dt) 
       end
    end 
 
    if love.keyboard.isDown("down") then
       if p2_y < 410 then
-	 p2_y = p2_y + (200 * dt) 
+	 p2_y = p2_y + (p2_speed * dt) 
       end
    end 
 
@@ -101,7 +105,7 @@ end
 
 
 function ball_move(dt)
-      -- Wall Collisions
+   -- Wall Collisions
    -- Scoring
    if ball_x < 0 then
       p2_score = p2_score + 1
@@ -109,6 +113,7 @@ function ball_move(dt)
       ball_yvel = 0
       ball_x = 380
       ball_y = 280
+      ball_difficulty = 0.5
    end
    
    if ball_x > 760 then
@@ -117,25 +122,30 @@ function ball_move(dt)
       ball_yvel = 0
       ball_x = 380
       ball_y = 280
+      ball_difficulty = 0.5
    end
    -- Bouncing
    if ball_y < 0 or ball_y > 560 then
       ball_yvel = ball_yvel * -1
       love.audio.play(wall_beep)
    end
-
+   
    -- Player Collisions
+   -- Difficulty Check
+   if math.abs(ball_xvel) >= ball_max then
+      ball_difficulty = 0
+   end
    -- Player 1
-   if ball_y >= p1_y and ball_y <= (p1_y +200) then
-      if ball_x <= 40 then
-	 ball_xvel = (ball_xvel + ball_difficulty) * -1
+   if (ball_y + 40) >= p1_y and ball_y <= (p1_y + 200) then
+      if ball_x <= 40 and ball_x >= 38 then
+	 ball_xvel = (ball_xvel - ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
    end
-
+   
    -- Player 2
-   if ball_y >= p2_y and ball_y <= (p2_y +200) then
-      if ball_x >= 720 then
+   if (ball_y + 40) >= p2_y and ball_y <= (p2_y +200) then
+      if ball_x >= 720 and ball_x <= 722 then
 	 ball_xvel = (ball_xvel + ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
