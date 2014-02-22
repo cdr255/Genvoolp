@@ -137,7 +137,8 @@ function ball_move(dt)
    end
    -- Player 1
    if (ball_y + 40) >= p1_y and ball_y <= (p1_y + 200) then
-      if ball_x <= 41 and ball_x >= 35 then
+      if ball_x <= 40 then
+	 ball_x = 41
 	 ball_xvel = (ball_xvel - ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
@@ -145,7 +146,8 @@ function ball_move(dt)
    
    -- Player 2
    if (ball_y + 40) >= p2_y and ball_y <= (p2_y +200) then
-      if ball_x >= 719 and ball_x <= 725 then
+      if ball_x >= 720 then
+	 ball_x = 719
 	 ball_xvel = (ball_xvel + ball_difficulty) * -1
 	 love.audio.play(paddle_beep)
       end
